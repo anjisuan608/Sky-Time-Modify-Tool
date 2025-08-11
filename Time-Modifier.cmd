@@ -57,7 +57,7 @@ echo.
 echo 请确保您已经进入游戏后继续进行操作!
 echo.
 echo ===============================================
-echo 键入 o 开始运行
+echo 键入 o 开始运行(当前切换间隔时间 %homeSwitchTimeInterval% 秒)
 echo 键入 s 配置切换
 echo ++++++++++++++++++++++++++++++++++++++++++++++
 echo 键入 r 联机恢复正确时间(实验性)
@@ -90,6 +90,7 @@ for %%t in (%times%) do (
     time %%t
     timeout /t %homeSwitchTimeInterval% >nul
 )
+pause
 goto home
 
 :homeTimeSwitchSetting
@@ -97,7 +98,7 @@ goto home
 echo.
 echo 当前遇境时间切换间隔为: %homeSwitchTimeInterval% 秒
 echo.
-echo 请输入新的切换间隔时间（0-99999秒）:
+echo 请输入新的遇境时间切换间隔（0-99999）秒:
 set /p "inputTime="
 
 @REM 验证输入是否为纯数字且在有效范围内
@@ -109,12 +110,12 @@ if %validInput%==1 (
         if %inputTime% leq 99999 (
             set "homeSwitchTimeInterval=%inputTime%"
             echo.
-            echo 设置成功！新的切换间隔时间: %homeSwitchTimeInterval% 秒
+            echo 设置成功！新的遇境时间切换间隔: %homeSwitchTimeInterval% 秒
         ) else set "validInput=0"
     ) else set "validInput=0"
 ) else (
     echo.
-    echo 错误：请输入0-99999之间的整数。
+    echo 错误：请输入0-99999之间的 整 数。
 )
 
 if %validInput%==0 (
@@ -122,6 +123,7 @@ if %validInput%==0 (
     echo 输入无效，请重新输入。
     timeout /t 2 >nul
 )
+pause
 goto home
 
 :av
@@ -131,7 +133,7 @@ echo.
 echo 请确保您已经进入游戏后继续进行操作!
 echo.
 echo ===============================================
-echo 键入 o 开始运行
+echo 键入 o 开始运行(当前切换间隔时间 %avSwitchTimeInterval% 秒)
 echo 键入 s 配置切换
 echo ++++++++++++++++++++++++++++++++++++++++++++++
 echo 键入 r 联机恢复正确时间(实验性)
@@ -163,6 +165,7 @@ for %%m in (%mins%) do (
     time !newtime!
     timeout /t %avSwitchTimeInterval% >nul
 )
+pause
 goto av
 
 :avTimeSwitchSetting
@@ -170,7 +173,7 @@ goto av
 echo.
 echo 当前云巢时间切换间隔为: %avSwitchTimeInterval% 秒
 echo.
-echo 请输入新的切换间隔时间（0-99999秒）:
+echo 请输入新的云巢切换间隔（0-99999）秒:
 set /p "inputTime="
 
 @REM 验证输入是否为纯数字且在有效范围内
@@ -182,7 +185,7 @@ if %validInput%==1 (
         if %inputTime% leq 99999 (
             set "avSwitchTimeInterval=%inputTime%"
             echo.
-            echo 设置成功！新的切换间隔时间: %avSwitchTimeInterval% 秒
+            echo 设置成功！新的云巢时间切换间隔: %avSwitchTimeInterval% 秒
         ) else set "validInput=0"
     ) else set "validInput=0"
 ) else (
@@ -195,9 +198,12 @@ if %validInput%==0 (
     echo 输入无效，请重新输入。
     timeout /t 2 >nul
 )
+pause
 goto av
 
 :reset
+echo 功能需要PowerShell功能正常!
+powershell -Command "Start-Service -Name 'w32time'"
 :TimeResetShell
 @REM 使用NTP服务器进行时间校准
 echo 正在与NTP服务器(ntp.ntsc.ac.cn)同步时间...
@@ -207,6 +213,7 @@ w32tm /resync >nul 2>&1 && (
 ) || (
     echo 时间同步失败，请检查网络连接或管理员权限。
 )
+pause
 goto menu
 
 :t
