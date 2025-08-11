@@ -24,6 +24,7 @@ if %errorlevel% neq 0 (
 @REM 初始化间隔时长变量
 set "homeSwitchTimeInterval=4"
 set "avSwitchTimeInterval=4"
+set "NTPServer=ntp.ntsc.ac.cn"
 
 :menu
 cls
@@ -90,6 +91,7 @@ for %%t in (%times%) do (
     time %%t
     timeout /t %homeSwitchTimeInterval% >nul
 )
+echo 执行完成!
 pause
 goto home
 
@@ -110,7 +112,7 @@ if %validInput%==1 (
         if %inputTime% leq 99999 (
             set "homeSwitchTimeInterval=%inputTime%"
             echo.
-            echo 设置成功！新的遇境时间切换间隔: %homeSwitchTimeInterval% 秒
+            echo 设置成功！新的遇境时间切换间隔: %inputTime% 秒
         ) else set "validInput=0"
     ) else set "validInput=0"
 ) else (
@@ -165,6 +167,7 @@ for %%m in (%mins%) do (
     time !newtime!
     timeout /t %avSwitchTimeInterval% >nul
 )
+echo 执行完成!
 pause
 goto av
 
@@ -185,7 +188,7 @@ if %validInput%==1 (
         if %inputTime% leq 99999 (
             set "avSwitchTimeInterval=%inputTime%"
             echo.
-            echo 设置成功！新的云巢时间切换间隔: %avSwitchTimeInterval% 秒
+            echo 设置成功！新的云巢时间切换间隔: %inputTime% 秒
         ) else set "validInput=0"
     ) else set "validInput=0"
 ) else (
@@ -202,23 +205,79 @@ pause
 goto av
 
 :reset
-echo 功能需要PowerShell功能正常!
+echo 实验性选项，若没有效果请尝试手动更改时间
 powershell -Command "Start-Service -Name 'w32time'"
 :TimeResetShell
 @REM 使用NTP服务器进行时间校准
-echo 正在与NTP服务器(ntp.ntsc.ac.cn)同步时间...
-w32tm /config /manualpeerlist:"ntp.ntsc.ac.cn" /syncfromflags:manual /update
+echo 正在与NTP服务器(%NTPServer%)同步时间...
+w32tm /config /manualpeerlist:"%NTPServer%" /syncfromflags:manual /update
 w32tm /resync >nul 2>&1 && (
     echo 时间同步成功！
 ) || (
     echo 时间同步失败，请检查网络连接或管理员权限。
 )
-pause
+timeout /t 3 >nul
 goto menu
 
 :t
 @REM 时间配置菜单
 cls
+echo ======================================
+echo 键入 w 打开系统 时间和日期 面板
+echo 键入 s 切换联机校准时间服务器(当前: %NTPServer% )
+echo 键入 o 联机校准时间
+echo 键入 b 返回上级菜单
+echo 键入 c 清屏
+echo 键入 x 退出
+echo =====================================
+echo 请选择要进行的操作:
+choice /C wsobcx /CS
+if %errorlevel% == 1 control timedate.cpl
+if %errorlevel% == 2 goto SwitchTimeServer
+if %errorlevel% == 3 goto reset
+if %errorlevel% == 3 goto menu
+if %errorlevel% == 4 goto c
+if %errorlevel% == 5 goto x
+@REM 异常回收
+goto t
+
+:SwitchTimeServer
+@REM 时间服务器
+cls
+echo 当前使用的时间服务器(NTP): %NTPServer%
+echo 请选择要使用的时间服务器(NTP):
+echo =====================================
+echo 键入 c 使用 cn.ntp.org.cn
+echo 键入 n 使用 ntp.ntsc.ac.cn
+echo =====================================
+echo =阿里云=
+echo 键入 1 使用 ntp1.aliyun.com
+echo 键入 2 使用 ntp2.aliyun.com
+echo 键入 3 使用 ntp3.aliyun.com
+echo 键入 4 使用 ntp4.aliyun.com
+echo 键入 5 使用 ntp5.aliyun.com
+echo 键入 6 使用 ntp6.aliyun.com
+echo 键入 7 使用 ntp7.aliyun.com
+echo =====================================
+echo 键入 w 使用 time.windows.com
+echo =====================================
+echo 键入 b 返回上一级菜单
+echo.
+echo 请选择要进行的操作:
+choice /C 1234567cnwb /CS
+if %errorlevel% == 1 set "NTPServer=ntp1.aliyun.com"
+if %errorlevel% == 2 set "NTPServer=ntp2.aliyun.com"
+if %errorlevel% == 3 set "NTPServer=ntp3.aliyun.com"
+if %errorlevel% == 4 set "NTPServer=ntp4.aliyun.com"
+if %errorlevel% == 5 set "NTPServer=ntp5.aliyun.com"
+if %errorlevel% == 6 set "NTPServer=ntp6.aliyun.com"
+if %errorlevel% == 7 set "NTPServer=ntp7.aliyun.com"
+if %errorlevel% == 8 set "NTPServer=cn.ntp.org.cn"
+if %errorlevel% == 9 set "NTPServer=ntp.ntsc.ac.cn"
+if %errorlevel% == 10 set "NTPServer=time.windows.com"
+if %errorlevel% == 11 goto t
+@REM 错误回收
+goto t
 
 :c
 @REM 清屏
@@ -227,4 +286,5 @@ goto menu
 
 :x
 @REM 退出
+timeout /t 3
 exit /b
