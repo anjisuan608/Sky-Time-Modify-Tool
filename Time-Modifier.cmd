@@ -13,9 +13,9 @@ title Sky-Time-Modify-Tool
 net session >nul 2>&1
 if %errorlevel% neq 0 (
     color 04
-    echo ======================
+    echo ==============================
     echo 请以管理员身份运行此工具！
-    echo ======================
+    echo ==============================
     echo.
     pause
     exit /b
@@ -23,16 +23,21 @@ if %errorlevel% neq 0 (
 
 :menu
 @REM 主菜单
+echo ================================================
 echo 键入 h 脚本以遇境时间模式工作
 echo 键入 a 脚本以云巢时间模式工作
 echo 键入 r 恢复当前时区的时间
+echo 键入 c 清屏
 echo 键入 x 退出批处理
+echo ================================================
+echo.
 echo 请选择要进行的操作:
-choice /C harx /CS
+choice /C harcx /CS
 if %errorlevel%==1 goto home
 if %errorlevel%==2 goto av
 if %errorlevel%==3 goto reset
-if %errorlevel%==4 goto x
+if %errorlevel%==4 goto c
+if %errorlevel%==5 goto x
 @REM 异常回收
 echo.
 echo 发生异常,返回菜单
@@ -40,8 +45,31 @@ goto menu
 
 :home
 @REM 遇境时间控制
-echo 请确保您已经进入游戏后继续
-pause
+echo.
+echo 请确保您已经进入游戏后继续进行操作!
+echo.
+echo ===============================================
+echo 键入 y 开始运行
+echo 键入 n 返回主菜单
+echo 键入 s 配置切换
+echo ++++++++++++++++++++++++++++++++++++++++++++++
+echo 键入 r 恢复当前时区的时间
+echo ++++++++++++++++++++++++++++++++++++++++++++++
+echo 键入 c 清屏
+echo 键入 x 退出
+echo ===============================================
+echo.
+echo 请选择要进行的操作:
+choice /C ynscx /CS
+if %errorlevel%==1 goto homeTimeShell
+if %errorlevel%==2 goto menu
+if %errorlevel%==3 goto homeTimeSwitchSetting
+if %errorlevel%==4 goto reset
+if %errorlevel%==5 goto c
+if %errorlevel%==6 goto x
+@REM 异常回收
+goto home
+
 goto homeTimeShell
 
 :homeTimeShell
@@ -56,9 +84,30 @@ goto menu
 
 :av
 @REM 云巢时间控制
-echo 请确保您已经进入游戏后继续
-pause
-goto avTimeShell
+echo.
+echo 请确保您已经进入游戏后继续进行操作!
+echo.
+echo ===============================================
+echo 键入 y 开始运行
+echo 键入 n 返回主菜单
+echo 键入 s 配置切换
+echo ++++++++++++++++++++++++++++++++++++++++++++++
+echo 键入 r 恢复当前时区的时间
+echo ++++++++++++++++++++++++++++++++++++++++++++++
+echo 键入 c 清屏
+echo 键入 x 退出
+echo ===============================================
+echo.
+echo 请选择要进行的操作:
+choice /C ynscx /CS
+if %errorlevel%==1 goto avTimeShell
+if %errorlevel%==2 goto menu
+if %errorlevel%==3 goto avTimeSwitchSetting
+if %errorlevel%==4 goto reset
+if %errorlevel%==5 goto c
+if %errorlevel%==6 goto x
+@REM 异常回收
+goto av
 
 :avTimeShell
 setlocal enabledelayedexpansion
@@ -69,13 +118,11 @@ for %%m in (%mins%) do (
     time !newtime!
     timeout /t 4 >nul
 )
-goto menu
+goto av
 
 :reset
-echo 正在重置时间……
-
-:TimeReset
-@REM 使用NTP服务器(ntp.ntsc.ac.cn)进行时间校准
+:TimeResetShell
+@REM 使用NTP服务器进行时间校准
 echo 正在与NTP服务器(ntp.ntsc.ac.cn)同步时间...
 w32tm /config /manualpeerlist:"ntp.ntsc.ac.cn" /syncfromflags:manual /update
 w32tm /resync >nul 2>&1 && (
@@ -83,6 +130,11 @@ w32tm /resync >nul 2>&1 && (
 ) || (
     echo 时间同步失败，请检查网络连接或管理员权限。
 )
+goto menu
+
+:c
+@REM 清屏
+cls
 goto menu
 
 :x
