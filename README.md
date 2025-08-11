@@ -9,7 +9,7 @@ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PubL v2 for more details.
 -->
-# 光遇遇境/云巢时间切换工具
+# 光遇遇境时间切换工具
 ## 仓库
 若访问缓慢，可以尝试前往以下站点:  
 注:下载资源释放中以`.cmd`或`.bat`结尾的文件使用!
@@ -19,7 +19,7 @@ See the Mulan PubL v2 for more details.
 GitHub | [仓库地址](https://github.com/anjisuan608/Sky-Time-Modify-Tool) | [文件下载](https://github.com/anjisuan608/Sky-Time-Modify-Tool/releases)
 GitCode | [仓库地址](https://gitcode.com/anjisuan608/Sky-Time-Modify-Tool) | [文件下载](https://gitcode.com/anjisuan608/Sky-Time-Modify-Tool/releases)
 Gitee | [仓库地址](https://gitee.com/anjisuan608/Sky-Time-Modify-Tool) | [文件下载](https://gitee.com/anjisuan608/Sky-Time-Modify-Tool/releases)
-AtomGit | [仓库地址](https://atomgit.com/anjisuan608/Sky-Time-Modify-Tool) | 文件下载
+AtomGit | [仓库地址](https://atomgit.com/anjisuan608/Sky-Time-Modify-Tool) | [文件下载](https://atomgit.com/anjisuan608/Sky-Time-Modify-Tool/tags?tab=release)
 
 ## 概览
 ### 工作原理
